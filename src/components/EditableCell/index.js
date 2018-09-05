@@ -3,10 +3,11 @@
  *                1 || true:普通输入框
  *                2: 选择输入框,可传入options配合使用
  *                3:年月输入框
+ *                4:CheckBox -- true||false
  */
 
 import React from 'react';
-import { Input, Form, Select, DatePicker } from 'antd';
+import { Input, Form, Select, DatePicker, Checkbox} from 'antd';
 import moment from 'moment';
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -95,6 +96,12 @@ export default class EditableCell extends React.Component {
     if (dateString) {
       handleSave({ ...record, ...selectValue });
     }
+  }
+  checkBoxChange = (e) =>{
+    const { record, handleSave } = this.props;
+    var selectValue = new Array();
+    selectValue[this.props.dataIndex] = e.target.checked;
+    handleSave({ ...record, ...selectValue });
   }
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -205,6 +212,19 @@ export default class EditableCell extends React.Component {
                     </div>
                   )
               );
+            }}
+          </EditableContext.Consumer>
+        ): editable == 4 ? (
+          <EditableContext.Consumer>
+            {(form) => {
+              this.form = form;
+              return (
+                  <FormItem style={{ margin: 0 }}>
+                    {getFieldDecorator(dataIndex)(
+                        <Checkbox defaultChecked={record[dataIndex]} onChange={this.checkBoxChange}/>
+                    )}
+                  </FormItem>
+                )
             }}
           </EditableContext.Consumer>
         ): (restProps.children)}
